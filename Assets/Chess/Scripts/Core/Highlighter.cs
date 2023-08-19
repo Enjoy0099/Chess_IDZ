@@ -1,76 +1,56 @@
-using System.Collections;
-using System.Collections.Generic;
+using Chess.Scripts.Core;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Highlighter : MonoBehaviour
 {
-    public GameObject game_object;
-
-    GameObject reference = null;
+    ChessPlayerPlacementHandler chessPieces_attachScript;
+    ChessBoardPlacementHandler chessBoard_attachScript;
+    GameObject referenceObject  = null;
 
     public bool attack = false;
 
-    int matrixX;
-    int matrixY;
-
+    int Highlighter_X, Highlighter_Y;
 
     private void Start()
     {
-        if (attack)
-        {
-            //Set to red
-            gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-        }
-    }
+        chessBoard_attachScript = ChessBoardPlacementHandler.Instance;
 
+        if (attack)
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+    }
 
     public void OnMouseUp()
     {
-        game_object = GameObject.FindGameObjectWithTag("GameManager");
-
         if (attack)
         {
-            GameObject _attack = game_object.GetComponent<GameManager>().GetPosition(matrixX, matrixY);
+            GameObject _attack = chessBoard_attachScript.GetPosition(Highlighter_X, Highlighter_Y);
 
             Destroy(_attack);
         }
 
-        game_object.GetComponent<GameManager>().SetPositionEmpty(reference.GetComponent<ChessPieces>().GetXBoard(),
-            reference.GetComponent<ChessPieces>().GetYBoard());
+        chessBoard_attachScript.SetPositionEmpty(chessPieces_attachScript.GetXBoard(),                                                  chessPieces_attachScript.GetYBoard());
 
-        //Move reference chess piece to this position
-        reference.GetComponent<ChessPieces>().SetXBoard(matrixX);
-        reference.GetComponent<ChessPieces>().SetYBoard(matrixY);
+        chessPieces_attachScript.SetXYBoard(Highlighter_X, Highlighter_Y);
 
-        //Update the matrix
-        game_object.GetComponent<GameManager>().SetPosition(reference);
+        chessPieces_attachScript.SetPosition(referenceObject);
 
-        //Switch Current Player
-        game_object.GetComponent<GameManager>().NextTurn();
+        chessBoard_attachScript.NextTurn();
 
-        //Destroy the move plates including self
-        
-        //reference.GetComponent<ChessPieces>().DestroyMovePlates();
-
+        chessBoard_attachScript.ClearHighlights();
     }
 
 
     public void SetCoords(int x, int y)
     {
-        matrixX = x;
-        matrixY = y;
+        Highlighter_X = x;
+        Highlighter_Y = y;
     }
-
 
     public void SetReference(GameObject obj)
     {
-        reference = obj;
-    }
-
-
-    public GameObject GetReference()
-    {
-        return reference;
+        referenceObject = obj;
+        chessPieces_attachScript = obj.GetComponent<ChessPlayerPlacementHandler>();
     }
 
 }

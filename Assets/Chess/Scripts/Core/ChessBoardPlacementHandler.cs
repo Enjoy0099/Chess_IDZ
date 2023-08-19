@@ -1,21 +1,30 @@
 using System;
 using UnityEngine;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine.Profiling;
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public sealed class ChessBoardPlacementHandler : MonoBehaviour {
+    
     [SerializeField] private GameObject[] _rowsArray;
     [SerializeField] private GameObject _highlightPrefab;
+    public GameObject[,] positions = new GameObject[8, 8];
     private GameObject[,] _chessBoard;
-
+    
     private bool gameOver = false;
-    public bool currentPlayer_black = true;
+
+    public bool choosePlayer_Black;
+    bool currentPlayer_blackturn;
 
     internal static ChessBoardPlacementHandler Instance;
 
     private void Awake() {
         Instance = this;
         GenerateArray();
+        if (choosePlayer_Black)
+            currentPlayer_blackturn = true;
+        else
+            currentPlayer_blackturn = false;
     }
 
     private void GenerateArray() {
@@ -28,6 +37,7 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
     }
 
     internal GameObject GetTile(int i, int j) {
+        
         try {
             return _chessBoard[i, j];
         } catch (Exception) {
@@ -36,17 +46,21 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
         }
     }
 
-    internal void Highlight(int row, int col) {
+    internal void Highlight(int row, int col, GameObject piece) 
+    {
         var tile = GetTile(row, col).transform;
         if (tile == null) {
             Debug.LogError("Invalid row or column.");
             return;
         }
-
-        Instantiate(_highlightPrefab, tile.transform.position, Quaternion.identity, tile.transform);
+        GameObject hl = Instantiate(_highlightPrefab, tile.transform.position, Quaternion.identity, tile.transform);
+        Highlighter hlScript = hl.GetComponent<Highlighter>();
+        hlScript.attack = false;
+        hlScript.SetCoords(row, col);
+        hlScript.SetReference(piece);
     }
 
-    internal void HighRedlight(int row, int col)
+    internal void HighRedlight(int row, int col, GameObject piece)
     {
         var tile = GetTile(row, col).transform;
         if (tile == null)
@@ -55,8 +69,11 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
             return;
         }
 
-        _highlightPrefab.GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0f, 1f);
-        Instantiate(_highlightPrefab, tile.transform.position, Quaternion.identity, tile.transform);
+        GameObject hl = Instantiate(_highlightPrefab, tile.transform.position, Quaternion.identity, tile.transform);
+        Highlighter hlScript = hl.GetComponent<Highlighter>();
+        hlScript.attack = true;
+        hlScript.SetCoords(row, col);
+        hlScript.SetReference(piece);
     }
 
     internal void ClearHighlights() {
@@ -99,73 +116,38 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
     #endregion
 
 
-    public void DestroyMovePlates()
+    public bool PositionOnBoard(int x, int y)
     {
-        //Destroy old MovePlates
-        GameObject[] movePlates = GameObject.FindGameObjectsWithTag("Highlighter");
-        for (int i = 0; i < movePlates.Length; i++)
-        {
-            Destroy(movePlates[i]); //Be careful with this function "Destroy" it is asynchronous
-        }
+        if (x < 0 || y < 0 || x >= 8 || y >= 8) return false;
+        return true;
     }
 
-
-    public void InitiateMovePlates()
+    public GameObject GetPosition(int x, int y)
     {
-        /*switch (this.name)
-        {
-            case "black_queen":
-            case "white_queen":
-                LineMovePlate(1, 0);
-                LineMovePlate(0, 1);
-                LineMovePlate(1, 1);
-                LineMovePlate(-1, 0);
-                LineMovePlate(0, -1);
-                LineMovePlate(-1, -1);
-                LineMovePlate(-1, 1);
-                LineMovePlate(1, -1);
-                break;
-            case "black_knight":
-            case "white_knight":
-                LMovePlate();
-                break;
-            case "black_bishop":
-            case "white_bishop":
-                LineMovePlate(1, 1);
-                LineMovePlate(1, -1);
-                LineMovePlate(-1, 1);
-                LineMovePlate(-1, -1);
-                break;
-            case "black_king":
-            case "white_king":
-                SurroundMovePlate();
-                break;
-            case "black_rook":
-            case "white_rook":
-                LineMovePlate(1, 0);
-                LineMovePlate(0, 1);
-                LineMovePlate(-1, 0);
-                LineMovePlate(0, -1);
-                break;
-            case "black_pawn":
-                PawnMovePlate(xBoard, yBoard - 1);
-                break;
-            case "white_pawn":
-                PawnMovePlate(xBoard, yBoard + 1);
-                break;
-        }*/
+        return positions[x, y];
     }
 
+    public void SetPositionEmpty(int x, int y)
+    {
+        positions[x, y] = null;
+    }
+
+    
     public void NextTurn()
     {
-        if (currentPlayer_black == false)
+        if (currentPlayer_blackturn == false)
         {
-            currentPlayer_black = true;
+            currentPlayer_blackturn = true;
         }
         else
         {
-            currentPlayer_black = false;
+            currentPlayer_blackturn = false;
         }
+    }
+
+    public bool IsBlackPlayer_Turn()
+    {
+        return currentPlayer_blackturn;
     }
 
 
@@ -173,4 +155,5 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
     {
         return gameOver;
     }
+    
 }
