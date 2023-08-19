@@ -8,7 +8,7 @@ public class Highlighter : MonoBehaviour
     ChessBoardPlacementHandler chessBoard_attachScript;
     GameObject referenceObject  = null;
 
-    public bool attack = false;
+    public bool attack;
 
     int Highlighter_X, Highlighter_Y;
 
@@ -25,6 +25,9 @@ public class Highlighter : MonoBehaviour
         if (attack)
         {
             GameObject _attack = chessBoard_attachScript.GetPosition(Highlighter_X, Highlighter_Y);
+
+            if (_attack.name == "B_King") chessBoard_attachScript.Winner("White");
+            if (_attack.name == "W_King") chessBoard_attachScript.Winner("Black");
 
             Destroy(_attack);
         }

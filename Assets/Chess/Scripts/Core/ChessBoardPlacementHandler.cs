@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
 using System.Diagnostics.CodeAnalysis;
-using UnityEngine.Profiling;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public sealed class ChessBoardPlacementHandler : MonoBehaviour {
@@ -15,6 +16,8 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
 
     public bool choosePlayer_Black;
     bool currentPlayer_blackturn;
+
+    [SerializeField] private TextMeshProUGUI winnerName_Text;
 
     internal static ChessBoardPlacementHandler Instance;
 
@@ -155,5 +158,21 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
     {
         return gameOver;
     }
-    
+
+    public void Winner(string playerWinner)
+    {
+        gameOver = true;
+
+        //Using UnityEngine.UI is needed here
+        winnerName_Text.enabled = true;
+        winnerName_Text.text = playerWinner + " is the winner";
+
+        Invoke("Reset_Game", 2f);
+        //GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
+    }
+
+    void Reset_Game()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 }
