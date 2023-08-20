@@ -56,7 +56,7 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
             Debug.LogError("Invalid row or column.");
             return;
         }
-        GameObject hl = Instantiate(_highlightPrefab, tile.transform.position, Quaternion.identity, tile.transform);
+        GameObject hl = Instantiate(_highlightPrefab, tile.transform.position + new Vector3(0f, 0f, -0.1f), Quaternion.identity, tile.transform);
         Highlighter hlScript = hl.GetComponent<Highlighter>();
         hlScript.attack = false;
         hlScript.SetCoords(row, col);
@@ -72,7 +72,7 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
             return;
         }
 
-        GameObject hl = Instantiate(_highlightPrefab, tile.transform.position, Quaternion.identity, tile.transform);
+        GameObject hl = Instantiate(_highlightPrefab, tile.transform.position + new Vector3(0f, 0f, -0.1f), Quaternion.identity, tile.transform);
         Highlighter hlScript = hl.GetComponent<Highlighter>();
         hlScript.attack = true;
         hlScript.SetCoords(row, col);
@@ -167,7 +167,7 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
         winnerName_Text.enabled = true;
         winnerName_Text.text = playerWinner + " is the winner";
 
-        Invoke("Reset_Game", 2f);
+        Invoke("Reset_Game", 4f);
         //GameObject.FindGameObjectWithTag("RestartText").GetComponent<Text>().enabled = true;
     }
 

@@ -197,16 +197,6 @@ namespace Chess.Scripts.Core
                     }
                 }
             }
-
-            if (chessBoard_attachScript.PositionOnBoard(x, y + 1) && chessBoard_attachScript.GetPosition(x, y + 1) != null && chessBoard_attachScript.GetPosition(x, y + 1).GetComponent<ChessPlayerPlacementHandler>().player_black != chessBoard_attachScript.IsBlackPlayer_Turn())
-                {
-                    chessBoard_attachScript.HighRedlight(x, y + 1, this.gameObject);
-                }
-
-                if (chessBoard_attachScript.PositionOnBoard(x, y - 1) && chessBoard_attachScript.GetPosition(x, y - 1) != null && chessBoard_attachScript.GetPosition(x, y - 1).GetComponent<ChessPlayerPlacementHandler>().player_black != chessBoard_attachScript.IsBlackPlayer_Turn())
-                {
-                    chessBoard_attachScript.HighRedlight(x, y - 1, this.gameObject);
-                }
         }
 
 
@@ -214,17 +204,17 @@ namespace Chess.Scripts.Core
         {
 
             //Overwrites either empty space or whatever was there
-            chessBoard_attachScript.positions[GetXBoard(), GetYBoard()] = obj;
+            chessBoard_attachScript.positions[GetXBoardPos(), GetYBoardPos()] = obj;
 
-            transform.position = chessBoard_attachScript.GetTile(GetXBoard(), GetYBoard()).transform.position;
+            transform.position = chessBoard_attachScript.GetTile(GetXBoardPos(), GetYBoardPos()).transform.position;
         }
 
-        public int GetXBoard()
+        public int GetXBoardPos()
         {
             return this.row;
         }
 
-        public int GetYBoard()
+        public int GetYBoardPos()
         {
             return this.column;
         }

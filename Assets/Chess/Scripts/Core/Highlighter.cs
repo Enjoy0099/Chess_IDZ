@@ -17,11 +17,12 @@ public class Highlighter : MonoBehaviour
         chessBoard_attachScript = ChessBoardPlacementHandler.Instance;
 
         if (attack)
-            gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1f);
     }
 
-    public void OnMouseUp()
+    public void OnMouseDown()
     {
+        Debug.Log("Press..");
         if (attack)
         {
             GameObject _attack = chessBoard_attachScript.GetPosition(Highlighter_X, Highlighter_Y);
@@ -32,7 +33,7 @@ public class Highlighter : MonoBehaviour
             Destroy(_attack);
         }
 
-        chessBoard_attachScript.SetPositionEmpty(chessPieces_attachScript.GetXBoard(),                                                  chessPieces_attachScript.GetYBoard());
+        chessBoard_attachScript.SetPositionEmpty(chessPieces_attachScript.GetXBoardPos(),                                                  chessPieces_attachScript.GetYBoardPos());
 
         chessPieces_attachScript.SetXYBoard(Highlighter_X, Highlighter_Y);
 
