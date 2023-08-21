@@ -1,5 +1,4 @@
 using Chess.Scripts.Core;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Highlighter : MonoBehaviour
@@ -17,7 +16,7 @@ public class Highlighter : MonoBehaviour
         chessBoard_attachScript = ChessBoardPlacementHandler.Instance;
 
         if (attack)
-            gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1f);
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
     }
 
     public void OnMouseDown()
